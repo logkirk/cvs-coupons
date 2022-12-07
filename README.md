@@ -3,6 +3,9 @@
 
 A quick-and-dirty tool to automatically add all available coupons to your CVS ExtraCare account.
 
+## Warning
+This code uses automation tools to access your account. Review the terms of service for your account and use this tool at your own risk.
+
 ## Installation
 1. Install [Google Chrome](https://www.google.com/chrome/)
 2. Install requirements: `pip install -r requirements.txt`
@@ -10,5 +13,8 @@ A quick-and-dirty tool to automatically add all available coupons to your CVS Ex
 ## Usage
 Just run it. The script will prompt you for your account credentials (proceed at your own risk).
 
-## Warning
-This code uses automation tools to access your account. Review the terms of service for your account and use this tool at your own risk.
+## Dependencies
+This code uses the following dependencies:
+
+- [undetected-chromedriver](https://github.com/ultrafunkamsterdam/undetected-chromedriver), which is licensed under GPL-3.0.
+- [selenium](https://github.com/SeleniumHQ/Selenium), which is licensed under Apache-2.0.
