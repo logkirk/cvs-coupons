@@ -152,4 +152,4 @@ if __name__ == "__main__":
     try:
         grabber.main()
     finally:
-        grabber.driver.close()
+        grabber.driver.quit()
