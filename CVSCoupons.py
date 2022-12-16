@@ -4,6 +4,7 @@ from getpass import getpass
 
 from selenium.common import NoSuchElementException
 from undetected_chromedriver import Chrome
+from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
@@ -27,7 +28,9 @@ class CVSCouponGrabber:
         self.email = input("Enter your email: ")
         self.password = getpass("Enter your password: ")
         self.date_of_birth = input("Enter your date of birth (MMDDYYYY): ")
-        self.driver = SlowChrome()
+        options = ChromeOptions()
+        options.add_argument("--headless")
+        self.driver = SlowChrome(options=options)
 
     def main(self):
         self.driver.get(URL)
