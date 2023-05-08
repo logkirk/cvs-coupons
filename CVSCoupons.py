@@ -1,6 +1,7 @@
 from datetime import datetime
 from time import sleep
 from getpass import getpass
+import argparse
 
 from selenium.common import NoSuchElementException
 from undetected_chromedriver import Chrome
@@ -11,6 +12,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 SLEEP_TIME = 1
 URL = "https://www.cvs.com/extracare/home"
+DRIVER_PATH = r"./chromedriver"
 
 
 class SlowChrome(Chrome):
@@ -24,13 +26,19 @@ class SlowChrome(Chrome):
 
 
 class CVSCouponGrabber:
-    def __init__(self):
-        self.email = input("Enter your email: ")
-        self.password = getpass("Enter your password: ")
-        self.date_of_birth = input("Enter your date of birth (MMDDYYYY): ")
+    def __init__(self, cmd_args):
+        if cmd_args.no_prompt is None:
+            self.email = input("Enter your email: ")
+            self.password = getpass("Enter your password: ")
+            self.date_of_birth = input("Enter your date of birth (MMDDYYYY): ")
+        else:
+            self.email = args.no_prompt[0]
+            self.password = args.no_prompt[1]
+            self.date_of_birth = args.no_prompt[2]
+
         options = ChromeOptions()
         options.add_argument("--headless")
-        self.driver = SlowChrome(options=options)
+        self.driver = SlowChrome(options=options, driver_executable_path=DRIVER_PATH)
 
     def main(self):
         self.driver.get(URL)
@@ -151,7 +159,11 @@ class CVSCouponGrabber:
 
 
 if __name__ == "__main__":
-    grabber = CVSCouponGrabber()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-n", "--no-prompt", action="store", nargs=3)
+    args = parser.parse_args()
+
+    grabber = CVSCouponGrabber(cmd_args=args)
     try:
         grabber.main()
     finally:
