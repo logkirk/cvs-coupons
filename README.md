@@ -1,4 +1,10 @@
 # cvs-coupon-grabber
+
+[project](https://sr.ht/~logankirkland/cvs-coupons/) / 
+[repo](https://git.sr.ht/~logankirkland/cvs-coupons) / 
+[mailing list](https://lists.sr.ht/~logankirkland/cvs-coupons) /
+[issues](https://todo.sr.ht/~logankirkland/cvs-coupons)
+
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A quick-and-dirty tool to automatically add all available coupons to your CVS ExtraCare account.
