@@ -1,4 +1,4 @@
-# cvs-coupon-grabber
+# CVS Coupon Grabber
 
 [project](https://sr.ht/~logankirkland/cvs-coupons/) / 
 [repo](https://git.sr.ht/~logankirkland/cvs-coupons) / 
