@@ -6,8 +6,12 @@
 [issues](https://todo.sr.ht/~logankirkland/cvs-coupons)
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![builds.sr.ht status](https://builds.sr.ht/~logankirkland/cvs-coupons.svg)](https://builds.sr.ht/~logankirkland/cvs-coupons?)
 
 A quick-and-dirty tool to automatically add all available coupons to your CVS ExtraCare account.
+
+> ℹ️ **Note**  
+> The canonical project locations are linked above. Other locations are mirrors.
 
 ## Warning
 This code uses automation tools to access your account. Review the terms of service for your account and use this tool at your own risk.
