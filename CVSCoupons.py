@@ -12,7 +12,6 @@ from selenium.webdriver.support import expected_conditions as ec
 
 SLEEP_TIME = 1
 URL = "https://www.cvs.com/extracare/home"
-DRIVER_PATH = r"./chromedriver"
 
 
 class SlowChrome(Chrome):
@@ -38,7 +37,7 @@ class CVSCouponGrabber:
 
         options = ChromeOptions()
         options.add_argument("--headless")
-        self.driver = SlowChrome(options=options, driver_executable_path=DRIVER_PATH)
+        self.driver = SlowChrome(options=options)
 
     def main(self):
         self.driver.get(URL)
