@@ -1,7 +1,8 @@
+from contextlib import suppress
 from datetime import datetime
 from time import sleep
 
-from selenium.common import TimeoutException
+from selenium.common import TimeoutException, NoSuchElementException
 from undetected_chromedriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
@@ -37,17 +38,20 @@ class CVSCouponGrabber:
         input("Sign into your ExtraCare account, then press any key to continue...")
         self.driver.get(EXTRACARE_URL)
 
-        # Scroll to bottom to load all dynamic content
         attempts = 3
         for attempt in range(attempts):
             try:
                 self.wait_until_visible_by_locator((By.XPATH, "//cvs-coupon-container"))
                 break
-            except TimeoutException:
+            except (TimeoutException, ElementClickInterceptedException):
                 if attempt == attempts - 1:
                     raise
-                self.driver.get(EXTRACARE_URL)
+                if not self.handle_survey_modal():
+                    self.driver.get(EXTRACARE_URL)
+
+        # Scroll to bottom to load all dynamic content
         self.scroll_to_bottom_of_dynamic_webpage()
+        self.handle_survey_modal()
 
         # Print coupon info
         all_coupon_elems = self.driver.find_elements(By.XPATH, "//cvs-coupon-container")
@@ -85,6 +89,18 @@ class CVSCouponGrabber:
         return WebDriverWait(driver, timeout).until(
             ec.presence_of_element_located(locator)
         )
+
+    def handle_survey_modal(self):
+        """Dismiss survey modal if present."""
+        with suppress(NoSuchElementException):
+            self.driver.switch_to.frame(
+                self.driver.find_element(By.XPATH, "//iframe[@id='kampyleInvite']")
+            )
+            self.driver.find_element(
+                By.XPATH, "//button[contains(@class, 'decline-button')]"
+            ).click()
+            return True
+        return False
 
     def scroll_to_bottom_of_dynamic_webpage(self, content_load_wait=1, timeout=30):
         last_height = None
