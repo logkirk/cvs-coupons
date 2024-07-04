@@ -44,9 +44,15 @@ class CVSCouponGrabber:
         unsent_coupon_elems = self.driver.find_elements(
             By.XPATH, "//cvs-coupon-container[.//send-to-card-action/button]"
         )
-        print("Already on card: {}/{}".format(len(sent_coupon_elems), len(all_coupon_elems)))
+        print(
+            "Already on card: {}/{}".format(
+                len(sent_coupon_elems), len(all_coupon_elems)
+            )
+        )
         self.print_coupons(sent_coupon_elems)
-        print("Not on card: {}/{}".format(len(unsent_coupon_elems), len(all_coupon_elems)))
+        print(
+            "Not on card: {}/{}".format(len(unsent_coupon_elems), len(all_coupon_elems))
+        )
         self.print_coupons(unsent_coupon_elems)
         print()
 
@@ -56,12 +62,16 @@ class CVSCouponGrabber:
     def wait_until_visible_by_locator(self, locator, driver=None, timeout=10):
         if driver is None:
             driver = self.driver
-        return WebDriverWait(driver, timeout).until(ec.visibility_of_element_located(locator))
+        return WebDriverWait(driver, timeout).until(
+            ec.visibility_of_element_located(locator)
+        )
 
     def wait_until_present_by_locator(self, locator, driver=None, timeout=10):
         if driver is None:
             driver = self.driver
-        return WebDriverWait(driver, timeout).until(ec.presence_of_element_located(locator))
+        return WebDriverWait(driver, timeout).until(
+            ec.presence_of_element_located(locator)
+        )
 
     def scroll_to_bottom_of_dynamic_webpage(self, content_load_wait=1, timeout=30):
         last_height = None
@@ -69,7 +79,9 @@ class CVSCouponGrabber:
         start_time = datetime.now()
         while new_height != last_height:
             if (datetime.now() - start_time).total_seconds() > timeout:
-                raise TimeoutError("Timed out trying to scroll to bottom of dynamic webpage.")
+                raise TimeoutError(
+                    "Timed out trying to scroll to bottom of dynamic webpage."
+                )
             self.scroll_to_bottom()
             sleep(content_load_wait)
             last_height = new_height
@@ -83,11 +95,19 @@ class CVSCouponGrabber:
 
     def print_coupons(self, coupon_elems):
         for index, elem in enumerate(coupon_elems):
-            title = elem.find_element(By.XPATH, ".//*[contains(@class, 'coupon-title')]").text
-            sub_heading = elem.find_element(By.XPATH, ".//div[contains(@class, 'coupon-sub-heading')]").text
-            details = elem.find_element(By.XPATH, ".//div[contains(@class, 'coupon-details')]").text
+            title = elem.find_element(
+                By.XPATH, ".//*[contains(@class, 'coupon-title')]"
+            ).text
+            sub_heading = elem.find_element(
+                By.XPATH, ".//div[contains(@class, 'coupon-sub-heading')]"
+            ).text
+            details = elem.find_element(
+                By.XPATH, ".//div[contains(@class, 'coupon-details')]"
+            ).text
             exp_date = (
-                elem.find_element(By.XPATH, ".//div[contains(@class, 'coupon-exp-date')]")
+                elem.find_element(
+                    By.XPATH, ".//div[contains(@class, 'coupon-exp-date')]"
+                )
                 .text.lower()
                 .lstrip("exp ")
                 .rstrip("mfr")
@@ -110,7 +130,9 @@ class CVSCouponGrabber:
         for index, elem in enumerate(coupon_elems):
             print("Sending {}/{}...".format(index + 1, total_num))
             elem.find_element(By.XPATH, ".//send-to-card-action/button").click()
-            self.wait_until_visible_by_locator((By.XPATH, ".//send-to-card-action/on-card"), driver=elem)
+            self.wait_until_visible_by_locator(
+                (By.XPATH, ".//send-to-card-action/on-card"), driver=elem
+            )
         print("All coupons sent.")
 
 
