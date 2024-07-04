@@ -1,9 +1,6 @@
 from datetime import datetime
 from time import sleep
-from getpass import getpass
-import argparse
 
-from selenium.common import NoSuchElementException
 from undetected_chromedriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
@@ -11,7 +8,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 
 SLEEP_TIME = 1
-URL = "https://www.cvs.com/extracare/home"
+HOME_URL = r"https://www.cvs.com"
+EXTRACARE_URL = r"https://www.cvs.com/extracare/home"
 
 
 class SlowChrome(Chrome):
@@ -25,59 +23,18 @@ class SlowChrome(Chrome):
 
 
 class CVSCouponGrabber:
-    def __init__(self, cmd_args):
-        if cmd_args.no_prompt is None:
-            self.email = input("Enter your email: ")
-            self.password = getpass("Enter your password: ")
-            self.date_of_birth = input("Enter your date of birth (MMDDYYYY): ")
-        else:
-            self.email = args.no_prompt[0]
-            self.password = args.no_prompt[1]
-            self.date_of_birth = args.no_prompt[2]
-
+    def __init__(self):
         options = ChromeOptions()
-        options.add_argument("--headless")
         self.driver = SlowChrome(options=options)
 
     def main(self):
-        self.driver.get(URL)
-
-        # Click 'Sign in' button
-        self.wait_until_visible_by_locator((By.XPATH, "//a[contains(text(), 'Sign in')]")).click()
-
-        # Enter email
-        self.wait_until_visible_by_locator((By.XPATH, "//input[@id='emailField']")).send_keys(self.email)
-        self.email = None
-
-        # Continue to password entry
-        self.driver.find_element(By.XPATH, "//button[contains(@class, 'continue-button')]").click()
-
-        # Enter password
-        self.wait_until_visible_by_locator((By.XPATH, "//input[@id='cvs-password-field-input']")).send_keys(
-            self.password
-        )
-        self.password = None
-
-        # Click 'Sign in' button
-        self.driver.find_element(By.XPATH, "//button[contains(text(), 'Sign in')]").click()
-
-        # Enter date of birth (content within shadow DOM)
-        shadow_root = self.wait_until_visible_by_locator((By.XPATH, "//cvs-dob-validation-form")).shadow_root
-        self.wait_until_visible_by_locator((By.NAME, "dob"), driver=shadow_root).send_keys(self.date_of_birth)
-        self.date_of_birth = None
-
-        # Click 'Continue' button
-        shadow_root.find_element(By.CLASS_NAME, "continueButton").click()
+        self.driver.get(HOME_URL)
+        input("Sign into your ExtraCare account, then press any key to continue...")
+        self.driver.get(EXTRACARE_URL)
 
         # Scroll to bottom to load all dynamic content
         self.wait_until_visible_by_locator((By.XPATH, "//cvs-coupon-container"))
         self.scroll_to_bottom_of_dynamic_webpage()
-
-        # Dismiss survey modal if present
-        try:
-            self.driver.find_element(By.XPATH, "TODO").click()  # TODO
-        except NoSuchElementException:
-            pass
 
         # Print coupon info
         all_coupon_elems = self.driver.find_elements(By.XPATH, "//cvs-coupon-container")
@@ -158,11 +115,7 @@ class CVSCouponGrabber:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-n", "--no-prompt", action="store", nargs=3)
-    args = parser.parse_args()
-
-    grabber = CVSCouponGrabber(cmd_args=args)
+    grabber = CVSCouponGrabber()
     try:
         grabber.main()
     finally:
