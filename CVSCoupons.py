@@ -29,6 +29,10 @@ class CVSCouponGrabber:
 
     def main(self):
         self.driver.get(HOME_URL)
+        self.driver.execute_script(
+            "alert('Sign into your CVS account, then press any key at the terminal to "
+            "continue the script.');"
+        )
         input("Sign into your ExtraCare account, then press any key to continue...")
         self.driver.get(EXTRACARE_URL)
 
