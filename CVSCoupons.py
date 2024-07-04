@@ -15,7 +15,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 SLEEP_TIME = 1
 HOME_URL = r"https://www.cvs.com"
-EXTRACARE_URL = r"https://www.cvs.com/extracare/home"
+EXTRACARE_URL = r"https://www.cvs.com/loyalty-deals"
 
 
 class SlowChrome(Chrome):
@@ -45,7 +45,9 @@ class CVSCouponGrabber:
         attempts = 3
         for attempt in range(attempts):
             try:
-                self.wait_until_visible_by_locator((By.XPATH, "//cvs-coupon-container"))
+                self.wait_until_visible_by_locator(
+                    (By.XPATH, "//button[@id='Alldeals']")
+                ).click()
                 break
             except (TimeoutException, ElementClickInterceptedException):
                 if attempt == attempts - 1:
