@@ -1,6 +1,7 @@
 from datetime import datetime
 from time import sleep
 
+from selenium.common import TimeoutException
 from undetected_chromedriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
@@ -37,7 +38,15 @@ class CVSCouponGrabber:
         self.driver.get(EXTRACARE_URL)
 
         # Scroll to bottom to load all dynamic content
-        self.wait_until_visible_by_locator((By.XPATH, "//cvs-coupon-container"))
+        attempts = 3
+        for attempt in range(attempts):
+            try:
+                self.wait_until_visible_by_locator((By.XPATH, "//cvs-coupon-container"))
+                break
+            except TimeoutException:
+                if attempt == attempts - 1:
+                    raise
+                self.driver.get(EXTRACARE_URL)
         self.scroll_to_bottom_of_dynamic_webpage()
 
         # Print coupon info
