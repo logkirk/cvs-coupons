@@ -63,7 +63,7 @@ class CVSCouponGrabber:
             driver = self.driver
         return WebDriverWait(driver, timeout).until(ec.presence_of_element_located(locator))
 
-    def scroll_to_bottom_of_dynamic_webpage(self, content_load_wait=0.1, timeout=30):
+    def scroll_to_bottom_of_dynamic_webpage(self, content_load_wait=1, timeout=30):
         last_height = None
         new_height = self.get_scroll_height()
         start_time = datetime.now()
