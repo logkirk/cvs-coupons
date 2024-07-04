@@ -7,11 +7,12 @@ from selenium.common import (
     NoSuchElementException,
     ElementClickInterceptedException,
 )
-from undetected_chromedriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from tqdm import tqdm
+from undetected_chromedriver import Chrome
 
 SLEEP_TIME = 1
 HOME_URL = r"https://www.cvs.com"
@@ -162,27 +163,34 @@ class CVSCouponGrabber:
 
     def send_coupons_to_card(self, coupon_elems):
         total_num = len(coupon_elems)
-        for index, elem in enumerate(coupon_elems):
-            print("Sending {}/{}...".format(index + 1, total_num))
+        with tqdm(
+            total=total_num,
+            desc="Sending coupons to card",
+            bar_format="{l_bar}|{bar}| {n_fmt}/{total_fmt}{postfix}",
+        ) as progress_bar:
+            for index, elem in enumerate(coupon_elems):
 
-            # Scroll the element into view, else the click will be intercepted
-            self.driver.execute_script("arguments[0].scrollIntoView(true);", elem)
+                # Scroll the element into view, else the click will be intercepted
+                self.driver.execute_script("arguments[0].scrollIntoView(true);", elem)
 
-            # Wait for the scroll to complete
-            start_time = datetime.now()
-            while True:
-                if (datetime.now() - start_time).total_seconds() > 10:
-                    raise TimeoutError(
-                        "Timed out waiting for element to scroll into view."
-                    )
-                with suppress(ElementClickInterceptedException):
-                    elem.find_element(By.XPATH, ".//send-to-card-action/button").click()
-                    break
-                sleep(0.1)
+                # Wait for the scroll to complete
+                start_time = datetime.now()
+                while True:
+                    if (datetime.now() - start_time).total_seconds() > 10:
+                        raise TimeoutError(
+                            "Timed out waiting for element to scroll into view."
+                        )
+                    with suppress(ElementClickInterceptedException):
+                        elem.find_element(
+                            By.XPATH, ".//send-to-card-action/button"
+                        ).click()
+                        break
+                    sleep(0.1)
 
-            self.wait_until_visible_by_locator(
-                (By.XPATH, ".//send-to-card-action/on-card"), driver=elem
-            )
+                self.wait_until_visible_by_locator(
+                    (By.XPATH, ".//send-to-card-action/on-card"), driver=elem
+                )
+                progress_bar.update(1)
         print("All coupons sent.")
 
 
