@@ -2,7 +2,11 @@ from contextlib import suppress
 from datetime import datetime
 from time import sleep
 
-from selenium.common import TimeoutException, NoSuchElementException
+from selenium.common import (
+    TimeoutException,
+    NoSuchElementException,
+    ElementClickInterceptedException,
+)
 from undetected_chromedriver import Chrome
 from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.by import By
@@ -158,7 +162,22 @@ class CVSCouponGrabber:
         total_num = len(coupon_elems)
         for index, elem in enumerate(coupon_elems):
             print("Sending {}/{}...".format(index + 1, total_num))
-            elem.find_element(By.XPATH, ".//send-to-card-action/button").click()
+
+            # Scroll the element into view, else the click will be intercepted
+            self.driver.execute_script("arguments[0].scrollIntoView(true);", elem)
+
+            # Wait for the scroll to complete
+            start_time = datetime.now()
+            while True:
+                if (datetime.now() - start_time).total_seconds() > 10:
+                    raise TimeoutError(
+                        "Timed out waiting for element to scroll into view."
+                    )
+                with suppress(ElementClickInterceptedException):
+                    elem.find_element(By.XPATH, ".//send-to-card-action/button").click()
+                    break
+                sleep(0.1)
+
             self.wait_until_visible_by_locator(
                 (By.XPATH, ".//send-to-card-action/on-card"), driver=elem
             )
