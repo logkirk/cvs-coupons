@@ -58,6 +58,9 @@ class CVSCouponGrabber:
 
         # Scroll to bottom to load all dynamic content
         self.scroll_to_bottom_of_dynamic_webpage()
+
+        # Wait a while for the survey modal to load
+        sleep(5)
         self.handle_survey_modal()
 
         # Print coupon info
