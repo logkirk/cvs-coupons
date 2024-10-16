@@ -1,6 +1,6 @@
 image: alpine/edge
 secrets:
-  - bdc7ee56-4468-4651-ba98-909e340e7424
+  - 1de21540-637b-46b0-886c-28fc43800e86
 environment:
   REPO: cvs-coupons
   GH_USER: logkirk
